@@ -5,7 +5,6 @@ import com.rvafin.visacenter.dto.response.VisaApplicationFormResponseDTO;
 import com.rvafin.visacenter.dto.response.VisaResponseDTO;
 import com.rvafin.visacenter.enums.VisaStatus;
 import com.rvafin.visacenter.service.interfaces.VisaDepartmentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
