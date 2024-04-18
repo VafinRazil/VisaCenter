@@ -5,22 +5,29 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Entity
 @Table(name = "tourist")
 public class TouristEntity{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     private String firstname;
 
     private String surname;
 
-    private String patronymic;
-
     private LocalDate birthday;
+
+    @Column(name = "international_passport_num")
+    private int internPassNum;
+
+    @Column(name = "international_passport_series")
+    private String internPassSeries;
+
+    private String patronymic;
 
     private String email;
 
@@ -30,14 +37,11 @@ public class TouristEntity{
     @Column(name = "expiration_date_passport")
     private LocalDate expirationDatePass;
 
-    @Column(name = "international_passport_num")
-    private String internPassNum;
-
-    @Column(name = "international_passport_series")
-    private int internPassSeries;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tourist")
+    private List<EVisaEntity> eVisas = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tourist")
-    private List<EVisaEntity> eVisa = new ArrayList<>();
+    private List<VisaApplicationFormEntity> visaApplicationFormEntities = new ArrayList<>();
 
     public TouristEntity(){}
 
@@ -105,27 +109,39 @@ public class TouristEntity{
         this.expirationDatePass = expirationDatePass;
     }
 
-    public String getInternPassNum() {
+    public int getInternPassNum() {
         return internPassNum;
     }
 
-    public void setInternPassNum(String internPassNum) {
+    public void setInternPassNum(int internPassNum) {
         this.internPassNum = internPassNum;
     }
 
-    public int getInternPassSeries() {
+    public String getInternPassSeries() {
         return internPassSeries;
     }
 
-    public void setInternPassSeries(int internPassSeries) {
+    public void setInternPassSeries(String internPassSeries) {
         this.internPassSeries = internPassSeries;
     }
 
-    public List<EVisaEntity> geteVisa() {
-        return eVisa;
+    public List<EVisaEntity> getEVisas() {
+        return eVisas;
     }
 
-    public void seteVisa(List<EVisaEntity> eVisa) {
-        this.eVisa = eVisa;
+    public void setEVisas(List<EVisaEntity> eVisas) {
+        this.eVisas = eVisas;
+    }
+
+    public List<VisaApplicationFormEntity> getVisaApplicationFormEntities() {
+        return visaApplicationFormEntities;
+    }
+
+    public void setVisaApplicationFormEntities(List<VisaApplicationFormEntity> visaApplicationFormEntities) {
+        this.visaApplicationFormEntities = visaApplicationFormEntities;
+    }
+
+    public String getFullName(){
+        return String.format("%s %s %s", surname, firstname, patronymic).toUpperCase(Locale.ENGLISH);
     }
 }

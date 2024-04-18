@@ -1,12 +1,12 @@
-package com.rvafin.visacenter.util;
+package com.rvafin.visacenter.dto.response;
 
-public class UnmappedFieldsInfo {
+public class UnmappedFieldsInfoDTO {
 
     private String firstLine;
 
     private String secondLine;
 
-    public UnmappedFieldsInfo(){};
+    public UnmappedFieldsInfoDTO(){};
 
     public String getFirstLine() {
         return firstLine;

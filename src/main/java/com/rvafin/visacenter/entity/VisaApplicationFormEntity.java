@@ -15,11 +15,10 @@ import java.time.LocalDateTime;
 public class VisaApplicationFormEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne(fetch = FetchType.LAZY)
     private TouristEntity tourist;
 
     private String profession;
@@ -47,6 +46,8 @@ public class VisaApplicationFormEntity {
     @UpdateTimestamp
     private LocalDateTime updatedOn;
 
+    @ManyToOne
+    private UserEntity creator;
 
     public VisaApplicationFormEntity() {}
 
@@ -56,6 +57,14 @@ public class VisaApplicationFormEntity {
 
     public Long getId() {
         return id;
+    }
+
+    public UserEntity getCreator() {
+        return creator;
+    }
+
+    public void setCreator(UserEntity creator) {
+        this.creator = creator;
     }
 
     public String getProfession() {

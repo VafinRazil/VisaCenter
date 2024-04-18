@@ -11,15 +11,12 @@ import java.time.LocalDateTime;
 public class EVisaEntity{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(name = "issue_date")
-    private LocalDate issueDate;
+    private String firstname;
 
-    private String number;
-
-    private String nationality;
+    private String surname;
 
     private LocalDate birthday;
 
@@ -29,12 +26,15 @@ public class EVisaEntity{
     @Column(name = "passport_series")
     private String passSeries;
 
+    @Column(name = "issue_date")
+    private LocalDate issueDate;
+
+    private String number;
+
+    private String nationality;
+
     @Column(name = "expire_date")
     private LocalDate expireDate;
-
-    private String firstname;
-
-    private String surname;
 
     @ManyToOne
     private CountryEntity country;
@@ -162,4 +162,6 @@ public class EVisaEntity{
     public void setTourist(TouristEntity tourist) {
         this.tourist = tourist;
     }
+
+
 }

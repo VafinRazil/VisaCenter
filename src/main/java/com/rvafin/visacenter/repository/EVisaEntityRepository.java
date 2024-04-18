@@ -13,7 +13,10 @@ public interface EVisaEntityRepository extends JpaRepository<EVisaEntity, Long> 
      *
      * @return список виз {@link EVisaEntity}, которые  отсортированы по дате формирования
      * */
-    List<EVisaEntity> getEVisaEntitiesByCountryIdAndIssueDateBetweenOrderByIssueDate(Long countryId, LocalDate startIssueDate, LocalDate endIssueDate);
+    List<EVisaEntity> findEVisaEntitiesByCountryIdAndIssueDateBetweenOrderByIssueDate(Long countryId, LocalDate startIssueDate, LocalDate endIssueDate);
 
 
+    /**
+     * Получаем визы, */
+    List<EVisaEntity> findEVisaEntitiesByTouristIsNull();
 }

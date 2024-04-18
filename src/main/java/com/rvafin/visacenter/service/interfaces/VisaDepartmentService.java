@@ -1,28 +1,30 @@
 package com.rvafin.visacenter.service.interfaces;
 
-import com.rvafin.visacenter.dto.request.CreateVisaApplicationRequestDTO;
-import com.rvafin.visacenter.dto.response.VisaApplicationFormResponseDTO;
+import com.rvafin.visacenter.dto.request.VisaApplicationRequestDTO;
+import com.rvafin.visacenter.dto.response.VisaApplicationResponseDTO;
 import com.rvafin.visacenter.dto.response.VisaResponseDTO;
 import com.rvafin.visacenter.enums.VisaStatus;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public interface VisaDepartmentService {
 
-    boolean createVisaApplication(CreateVisaApplicationRequestDTO createVisaApplicationRequestDTO);
+    boolean createVisaApplication(VisaApplicationRequestDTO visaApplicationRequestDTO);
 
     boolean deleteVisaApplication(long id);
 
-    List<VisaApplicationFormResponseDTO> getVisaApplications(Long countryId, LocalDate startDate, LocalDate endDate, VisaStatus visaStatus);
+    List<VisaApplicationResponseDTO> getVisaApplications(Long countryId, LocalDate startDate, LocalDate endDate, VisaStatus visaStatus);
 
-    VisaApplicationFormResponseDTO getVisaApplicationById(long id);
+    List<VisaApplicationResponseDTO> getVisaApplicationsForClient();
 
-    boolean changeVisaApplication(CreateVisaApplicationRequestDTO createVisaApplicationRequestDTO);
+    VisaApplicationResponseDTO getVisaApplicationById(long id);
+
+    boolean changeVisaApplication(VisaApplicationRequestDTO visaApplicationRequestDTO, Long id) throws AccessDeniedException;
 
     void sendVisaApplicationsToVisaCenter(List<Long> ids);
-
-    void handleSentVisaApplications();
 
     List<VisaResponseDTO> getVisas(Long countryId, LocalDate startDate, LocalDate endDate);
 
