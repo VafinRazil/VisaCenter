@@ -26,7 +26,10 @@ public interface EVisaMapper {
     EVisaEntity toEVisaEntity(VisaApplicationFormEntity visaApplicationForm);
 
     @AfterMapping
-    default void setAdditionalValues(@MappingTarget EVisaEntity eVisaEntity, VisaApplicationFormEntity visaApplicationForm){
+    default void setAdditionalValues(
+            @MappingTarget EVisaEntity eVisaEntity,
+            VisaApplicationFormEntity visaApplicationForm
+    ){
         eVisaEntity.setIssueDate(LocalDate.now());
         eVisaEntity.setNumber(UUID.randomUUID().toString());
     }

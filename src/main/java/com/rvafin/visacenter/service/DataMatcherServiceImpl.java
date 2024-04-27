@@ -61,13 +61,20 @@ public class DataMatcherServiceImpl implements DataMatcherService {
     }
 
     @Override
-    public Double impreciseMatch(EVisaEntity eVisa, TouristEntity tourist, MatchingAlgorithm<Double> algorithm) {
+    public Double impreciseMatch(
+            EVisaEntity eVisa,
+            TouristEntity tourist,
+            MatchingAlgorithm<Double> algorithm
+    ) {
         String touristInfoInVisa = eVisa.format(impreciseDataMatcherConfiguration.getDelimiter());
         String touristInfoInEntity = tourist.format(impreciseDataMatcherConfiguration.getDelimiter());
         return algorithm.apply(touristInfoInVisa, touristInfoInEntity);
     }
 
-    private MatchingResultDTO matchUnmatchedVisas(List<EVisaEntity> unmatchedVisas, MatchingResultDTO matchingResultDTO){
+    private MatchingResultDTO matchUnmatchedVisas(
+            List<EVisaEntity> unmatchedVisas,
+            MatchingResultDTO matchingResultDTO
+    ){
         List<TouristEntity> touristsWithoutVisa = touristEntityRepository.findTouristEntitiesWithVisaInStatusSend();
         Set<Long> matchedTouristIds = new HashSet<>();
         unmatchedVisas.forEach(visa -> {
@@ -82,7 +89,9 @@ public class DataMatcherServiceImpl implements DataMatcherService {
         return matchingResultDTO;
     }
 
-    private void updateVisaApplicationStatus(Optional<VisaApplicationFormEntity> visaApplication){
+    private void updateVisaApplicationStatus(
+            Optional<VisaApplicationFormEntity> visaApplication
+    ){
         visaApplication.ifPresent(visaApplicationForm -> {
             visaApplicationForm.setStatus(VisaStatus.READY);
             visaApplicationFormEntityRepository.save(visaApplicationForm);
@@ -97,29 +106,26 @@ public class DataMatcherServiceImpl implements DataMatcherService {
         MatchingAlgorithm<Double> matchingAlgorithm = new JaroWinklerDistance();
         return touristsWithoutVisa
                 .stream()
-                .filter(tourist -> !matchedTouristIds.contains(tourist.getId()))//пропускаем уже сопоставленные в ходе итерации visa туристов
+                .filter(tourist -> !matchedTouristIds.contains(tourist.getId()))
                 .takeWhile(tourist -> {
                     double percentage = impreciseMatch(eVisa, tourist, matchingAlgorithm);
                     return !(percentage > 90d);
                 }).findAny();
     }
 
-    private Optional<TouristEntity> getTouristForVisa(EVisaEntity eVisa){
-        Optional<TouristEntity> touristForVisa;
-        List<TouristEntity> touristEntities =
-                touristEntityRepository
-                        .findTouristEntitiesByInternPassNumAndInternPassSeriesAndCountryId(
-                                eVisa.getPassNum(), eVisa.getPassSeries(), eVisa.getCountry().getId());
+    private Optional<TouristEntity> getTouristForVisa(
+            EVisaEntity eVisa
+    ){
+        List<TouristEntity> touristEntities = touristEntityRepository.findTouristEntitiesByInternPassNumAndInternPassSeriesAndCountryId(eVisa.getPassNum(), eVisa.getPassSeries(), eVisa.getCountry().getId());
         if (touristEntities.size() == 1){
-            touristForVisa = Optional.ofNullable(touristEntities.get(0));
+            return Optional.ofNullable(touristEntities.get(0));
         }else{
-            touristForVisa = touristEntities
+            return touristEntities
                     .stream()
                     .filter(tourist -> tourist.getFirstname().equalsIgnoreCase(eVisa.getFirstname())
                             && tourist.getSurname().equalsIgnoreCase(eVisa.getSurname())
                             && tourist.getBirthday().isEqual(eVisa.getBirthday()))
                     .findAny();
         }
-        return touristForVisa;
     }
 }

@@ -27,7 +27,10 @@ public abstract class TouristMapper {
 
     @Named("creatingNewTourist")
     @AfterMapping
-    public void setCountry(@MappingTarget TouristEntity touristEntity, TouristRequestDTO touristRequestDTO) {
+    public void setCountry(
+            @MappingTarget TouristEntity touristEntity,
+            TouristRequestDTO touristRequestDTO
+    ) {
         CountryEntity country = countryEntityRepository.findById(touristRequestDTO.getCountryId())
                 .orElseThrow(() -> new NoSuchElementException("No such country in DB by id " + touristRequestDTO.getCountryId()));
         touristEntity.setCountry(country);
@@ -35,7 +38,10 @@ public abstract class TouristMapper {
 
     @Named("updateTouristInfo")
     @AfterMapping
-    public void setCountryWithCondition(@MappingTarget TouristEntity touristEntity, TouristRequestDTO touristRequestDTO) {
+    public void setCountryWithCondition(
+            @MappingTarget TouristEntity touristEntity,
+            TouristRequestDTO touristRequestDTO
+    ) {
         if (Long.compare(touristEntity.getCountry().getId(), touristRequestDTO.getCountryId()) != 0) {
             CountryEntity country = countryEntityRepository.findById(touristRequestDTO.getCountryId())
                     .orElseThrow(() -> new NoSuchElementException("No such country in DB by id " + touristRequestDTO.getCountryId()));

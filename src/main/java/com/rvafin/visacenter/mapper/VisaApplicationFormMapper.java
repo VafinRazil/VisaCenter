@@ -26,19 +26,25 @@ public abstract class VisaApplicationFormMapper {
     @Mapping(target = "travelCountry",
             expression = "java(countryEntityRepository.findById(visaApplicationRequestDTO.getTravelCountryId()).orElseThrow(() -> new NoSuchElementException(\"No such country in DB by id \" + visaApplicationRequestDTO.getTravelCountryId())))")
     public abstract VisaApplicationFormEntity toVisaApplicationFormEntity(
-            VisaApplicationRequestDTO visaApplicationRequestDTO) throws NoSuchElementException;
+            VisaApplicationRequestDTO visaApplicationRequestDTO
+    ) throws NoSuchElementException;
 
     @Mapping(target = "fullName", expression = "java(visaApplicationFormEntity.getTourist().getFullName())")
     @Mapping(target = "birthday", expression = "java(visaApplicationFormEntity.getTourist().getBirthday())")
     @Mapping(target = "travelCountry", expression = "java(visaApplicationFormEntity.getTravelCountry().getName())")
     public abstract VisaApplicationResponseDTO toVisaApplicationResponseDTO(
-            VisaApplicationFormEntity visaApplicationFormEntity);
+            VisaApplicationFormEntity visaApplicationFormEntity
+    );
 
     public abstract List<VisaApplicationResponseDTO> toVisaApplicationResponseDTOList(
-            List<VisaApplicationFormEntity> visaApplicationFormEntities);
+            List<VisaApplicationFormEntity> visaApplicationFormEntities
+    );
 
     @BeforeMapping
-    public void setCountryEntityWithCondition(@MappingTarget VisaApplicationFormEntity visaApplicationForm, VisaApplicationRequestDTO visaApplicationRequestDTO){
+    public void setCountryEntityWithCondition(
+            @MappingTarget VisaApplicationFormEntity visaApplicationForm,
+            VisaApplicationRequestDTO visaApplicationRequestDTO
+    ){
         if (Long.compare(visaApplicationForm.getTravelCountry().getId(), visaApplicationRequestDTO.getTravelCountryId()) != 0) {
             CountryEntity country = countryEntityRepository.findById(visaApplicationRequestDTO.getTravelCountryId()).orElseThrow();
             visaApplicationForm.setTravelCountry(country);
@@ -46,6 +52,9 @@ public abstract class VisaApplicationFormMapper {
     }
 
     @Mapping(target = "travelCountry", ignore = true)
-    public abstract VisaApplicationFormEntity updateVisaApplicationFormEntity(@MappingTarget VisaApplicationFormEntity visaApplicationForm, VisaApplicationRequestDTO visaApplicationRequestDTO);
+    public abstract VisaApplicationFormEntity updateVisaApplicationFormEntity(
+            @MappingTarget VisaApplicationFormEntity visaApplicationForm,
+            VisaApplicationRequestDTO visaApplicationRequestDTO
+    );
 
 }
