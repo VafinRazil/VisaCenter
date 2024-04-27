@@ -8,7 +8,6 @@ import com.rvafin.visacenter.enums.VisaStatus;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 public interface VisaDepartmentService {
 

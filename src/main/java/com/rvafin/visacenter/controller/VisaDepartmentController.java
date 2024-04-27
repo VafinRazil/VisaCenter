@@ -34,6 +34,7 @@ public class VisaDepartmentController {
         try {
             return ResponseEntity.ok(visaDepartmentService.createVisaApplication(visaApplicationRequestDTO));
         }catch (Exception e){
+            log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
@@ -43,6 +44,7 @@ public class VisaDepartmentController {
         try {
             return ResponseEntity.ok(visaDepartmentService.getVisaApplicationsForClient());
         }catch (Exception e){
+            log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
         }
     }
@@ -58,6 +60,7 @@ public class VisaDepartmentController {
         try {
             return ResponseEntity.ok(visaDepartmentService.getVisaApplications(countryId, startDate, endDate, visaStatus));
         }catch (Exception e){
+            log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
         }
     }
@@ -67,7 +70,8 @@ public class VisaDepartmentController {
         try {
             return ResponseEntity.ok(visaDepartmentService.deleteVisaApplication(id));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
+            log.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
@@ -76,6 +80,7 @@ public class VisaDepartmentController {
         try {
             return ResponseEntity.ok(visaDepartmentService.getVisaApplicationById(id));
         }catch (Exception e){
+            log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
         }
     }
@@ -85,6 +90,7 @@ public class VisaDepartmentController {
         try {
             return ResponseEntity.ok(visaDepartmentService.changeVisaApplication(visaApplicationRequestDTO, id));
         }catch (Exception e){
+            log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(e.getMessage());
         }
     }
@@ -95,6 +101,7 @@ public class VisaDepartmentController {
             visaDepartmentService.sendVisaApplicationsToVisaCenter(ids);
             return ResponseEntity.ok().build();
         }catch (Exception e){
+            log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());
         }
     }
@@ -104,6 +111,7 @@ public class VisaDepartmentController {
         try {
             return ResponseEntity.ok(visaDepartmentService.getVisaById(id));
         }catch (Exception e){
+            log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
         }
     }
@@ -113,6 +121,7 @@ public class VisaDepartmentController {
         try {
             return ResponseEntity.ok(null);
         }catch (Exception e){
+            log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
         }
     }

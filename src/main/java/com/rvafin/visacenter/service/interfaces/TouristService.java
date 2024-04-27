@@ -1,11 +1,13 @@
 package com.rvafin.visacenter.service.interfaces;
 
-import org.springframework.stereotype.Service;
+import com.rvafin.visacenter.dto.request.TouristRequestDTO;
+import com.rvafin.visacenter.dto.response.TouristResponseDTO;
 
-@Service
-public class TouristService {
+public interface TouristService {
 
-    public void createNewTourist(){
+    boolean createNewTourist(TouristRequestDTO touristRequestDTO);
 
-    }
+    boolean editTouristInfo(TouristRequestDTO touristRequestDTO, Long id);
+
+    TouristResponseDTO getTouristInfoById(Long id);
 }

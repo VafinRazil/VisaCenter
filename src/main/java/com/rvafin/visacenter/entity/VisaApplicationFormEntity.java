@@ -3,8 +3,6 @@ package com.rvafin.visacenter.entity;
 import com.rvafin.visacenter.enums.VisaStatus;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;

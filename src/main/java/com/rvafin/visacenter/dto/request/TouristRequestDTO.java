@@ -2,7 +2,7 @@ package com.rvafin.visacenter.dto.request;
 
 import java.time.LocalDate;
 
-public class CreateTouristRequestDTO {
+public class TouristRequestDTO {
 
     private String firstname;
 
@@ -14,7 +14,7 @@ public class CreateTouristRequestDTO {
 
     private String email;
 
-    private Long country;
+    private Long countryId;
 
     private LocalDate expirationDatePass;
 
@@ -22,7 +22,7 @@ public class CreateTouristRequestDTO {
 
     private int internPassSeries;
 
-    public CreateTouristRequestDTO(){}
+    public TouristRequestDTO(){}
 
     public String getFirstname() {
         return firstname;
@@ -64,12 +64,12 @@ public class CreateTouristRequestDTO {
         this.email = email;
     }
 
-    public Long getCountry() {
-        return country;
+    public Long getCountryId() {
+        return countryId;
     }
 
-    public void setCountry(Long country) {
-        this.country = country;
+    public void setCountryId(Long countryId) {
+        this.countryId = countryId;
     }
 
     public LocalDate getExpirationDatePass() {

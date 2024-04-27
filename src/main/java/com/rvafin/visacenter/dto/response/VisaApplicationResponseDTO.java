@@ -18,7 +18,7 @@ public class VisaApplicationResponseDTO {
 
     private LocalDate birthday;
 
-    private CountryEntity travelCountry;
+    private String travelCountry;
 
     @JsonProperty("zaya_id")
     private String zayaId;
@@ -62,11 +62,11 @@ public class VisaApplicationResponseDTO {
         this.birthday = birthday;
     }
 
-    public CountryEntity getTravelCountry() {
+    public String getTravelCountry() {
         return travelCountry;
     }
 
-    public void setTravelCountry(CountryEntity travelCountry) {
+    public void setTravelCountry(String travelCountry) {
         this.travelCountry = travelCountry;
     }
 

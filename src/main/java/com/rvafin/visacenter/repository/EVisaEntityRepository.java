@@ -17,6 +17,7 @@ public interface EVisaEntityRepository extends JpaRepository<EVisaEntity, Long> 
 
 
     /**
-     * Получаем визы, */
+     * Получаем список виз, которые не присвоены туристам
+     * */
     List<EVisaEntity> findEVisaEntitiesByTouristIsNull();
 }

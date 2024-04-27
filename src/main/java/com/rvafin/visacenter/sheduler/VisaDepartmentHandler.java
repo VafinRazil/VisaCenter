@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @ConditionalOnProperty(value = "visa.generate.enable", havingValue = "true", matchIfMissing = true)
 @Service
@@ -45,14 +46,14 @@ public class VisaDepartmentHandler {
     /**
      * Имитация логики оформления визы
      * */
-    @Transactional
     @Async
     @Scheduled(cron = "*/${visa.generate.period.second} * * * * *")
+    @Transactional
     public void everyTenSeconds(){
+        log.info("job!");
         List<VisaApplicationFormEntity> visaApplicationFormEntities = visaApplicationFormEntityRepository.findVisaApplicationFormEntitiesByStatus(VisaStatus.SEND);
         for (VisaApplicationFormEntity visaApplicationForm: visaApplicationFormEntities){
             EVisaEntity eVisaEntity = eVisaMapper.toEVisaEntity(visaApplicationForm);
-            eVisaEntity.setIssueDate(LocalDate.now());
             LocalDate expireDate = formExpireVisaDate();
             eVisaEntity.setExpireDate(expireDate);
             eVisaEntityRepository.save(eVisaEntity);

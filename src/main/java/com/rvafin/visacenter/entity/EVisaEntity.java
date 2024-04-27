@@ -1,28 +1,36 @@
 package com.rvafin.visacenter.entity;
 
+import com.rvafin.visacenter.imprecise_data_matcher.annotations.FieldParams;
+import com.rvafin.visacenter.imprecise_data_matcher.interfaces.StringFormatter;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.*;
 
 @Entity
 @Table(name = "evisa")
-public class EVisaEntity{
+public class EVisaEntity implements StringFormatter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @FieldParams(position = 3)
     private String firstname;
 
+    @FieldParams(position = 4)
     private String surname;
 
+    @FieldParams(position = 2, format = "dd.MM.yyyy")
     private LocalDate birthday;
 
+    @FieldParams(position = 0)
     @Column(name = "passport_num")
     private int passNum;
 
+    @FieldParams(position = 1)
     @Column(name = "passport_series")
     private String passSeries;
 
@@ -30,8 +38,6 @@ public class EVisaEntity{
     private LocalDate issueDate;
 
     private String number;
-
-    private String nationality;
 
     @Column(name = "expire_date")
     private LocalDate expireDate;
@@ -89,14 +95,6 @@ public class EVisaEntity{
 
     public void setCreatedOn(LocalDateTime createdOn) {
         this.createdOn = createdOn;
-    }
-
-    public String getNationality() {
-        return nationality;
-    }
-
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
     }
 
     public LocalDate getBirthday() {
@@ -163,5 +161,7 @@ public class EVisaEntity{
         this.tourist = tourist;
     }
 
-
+    public String getFullName(){
+        return String.format("%s %s", surname, firstname).toUpperCase(Locale.ENGLISH);
+    }
 }

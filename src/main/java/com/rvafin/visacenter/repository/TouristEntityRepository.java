@@ -1,11 +1,9 @@
 package com.rvafin.visacenter.repository;
 
-import com.rvafin.visacenter.entity.CountryEntity;
 import com.rvafin.visacenter.entity.TouristEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface TouristEntityRepository extends JpaRepository<TouristEntity, Long> {

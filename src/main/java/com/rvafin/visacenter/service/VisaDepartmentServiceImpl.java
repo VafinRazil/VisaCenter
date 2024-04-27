@@ -3,19 +3,14 @@ package com.rvafin.visacenter.service;
 import com.rvafin.visacenter.dto.request.VisaApplicationRequestDTO;
 import com.rvafin.visacenter.dto.response.VisaApplicationResponseDTO;
 import com.rvafin.visacenter.dto.response.VisaResponseDTO;
-import com.rvafin.visacenter.entity.CountryEntity;
 import com.rvafin.visacenter.entity.EVisaEntity;
 import com.rvafin.visacenter.entity.VisaApplicationFormEntity;
 import com.rvafin.visacenter.enums.VisaStatus;
 import com.rvafin.visacenter.mapper.EVisaMapper;
-import com.rvafin.visacenter.mapper.EVisaMapperImpl;
 import com.rvafin.visacenter.mapper.VisaApplicationFormMapper;
-import com.rvafin.visacenter.mapper.VisaApplicationFormMapperImpl;
-import com.rvafin.visacenter.repository.CountryEntityRepository;
-import com.rvafin.visacenter.repository.EVisaEntityRepository;
-import com.rvafin.visacenter.repository.UserEntityRepository;
-import com.rvafin.visacenter.repository.VisaApplicationFormEntityRepository;
+import com.rvafin.visacenter.repository.*;
 import com.rvafin.visacenter.service.interfaces.VisaDepartmentService;
+import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,26 +34,29 @@ public class VisaDepartmentServiceImpl implements VisaDepartmentService {
     private final VisaApplicationFormEntityRepository visaApplicationFormEntityRepository;
     private final EVisaEntityRepository eVisaEntityRepository;
     private final CountryEntityRepository countryEntityRepository;
+    private final TouristEntityRepository touristEntityRepository;
     private final UserEntityRepository userEntityRepository;
-    private final VisaApplicationFormMapper visaApplicationFormMapper = new VisaApplicationFormMapperImpl();
-    private final EVisaMapper eVisaMapper = new EVisaMapperImpl();
+    private final VisaApplicationFormMapper visaApplicationFormMapper = Mappers.getMapper(VisaApplicationFormMapper.class);
+    private final EVisaMapper eVisaMapper = Mappers.getMapper(EVisaMapper.class);
 
     @Autowired
     public VisaDepartmentServiceImpl(
             VisaApplicationFormEntityRepository visaApplicationFormEntityRepository,
             EVisaEntityRepository eVisaEntityRepository,
             CountryEntityRepository countryEntityRepository,
+            TouristEntityRepository touristEntityRepository,
             UserEntityRepository userEntityRepository
-
     ){
         this.eVisaEntityRepository = eVisaEntityRepository;
         this.visaApplicationFormEntityRepository = visaApplicationFormEntityRepository;
         this.countryEntityRepository = countryEntityRepository;
+        this.touristEntityRepository = touristEntityRepository;
         this.userEntityRepository = userEntityRepository;
     }
 
     @Transactional
     @Override
+    //возможно не будет работать, нужно через touristRepo сохранять
     public boolean createVisaApplication(VisaApplicationRequestDTO visaApplicationRequestDTO) {
         log.info("Create new {}", visaApplicationRequestDTO);
         VisaApplicationFormEntity newVisaApplicationEntity = visaApplicationFormMapper.toVisaApplicationFormEntity(visaApplicationRequestDTO);
@@ -115,14 +113,7 @@ public class VisaDepartmentServiceImpl implements VisaDepartmentService {
         if (!allowedStatuses.contains(visaApplicationForm.getStatus())){
             throw new AccessDeniedException("Visa application details cannot be changed after submission");
         }
-        visaApplicationForm.setProfession(visaApplicationRequestDTO.getProfession());
-        visaApplicationForm.setPassportIssueDate(visaApplicationRequestDTO.getPassportIssueDate());
-        visaApplicationForm.setFamilyStatus(visaApplicationRequestDTO.getFamilyStatus());
-        visaApplicationForm.setZayaId(visaApplicationRequestDTO.getZayaId());
-        if (Long.compare(visaApplicationForm.getTravelCountry().getId(), visaApplicationRequestDTO.getTravelCountryId()) != 0) {
-            CountryEntity country = countryEntityRepository.findById(visaApplicationRequestDTO.getTravelCountryId()).orElseThrow();
-            visaApplicationForm.setTravelCountry(country);
-        }
+        visaApplicationForm = visaApplicationFormMapper.updateVisaApplicationFormEntity(visaApplicationForm, visaApplicationRequestDTO);
         visaApplicationFormEntityRepository.save(visaApplicationForm);
         return true;
     }
@@ -131,6 +122,7 @@ public class VisaDepartmentServiceImpl implements VisaDepartmentService {
     @Override
     public void sendVisaApplicationsToVisaCenter(List<Long> ids) {
         log.info("Send {} visa applications to visa center", ids.size());
+        if (ids.size() >= 101) throw new IllegalArgumentException("Can send not more than 100 visa applications");
         List<VisaApplicationFormEntity> visaApplicationFormEntities = visaApplicationFormEntityRepository.findAllById(ids);
         log.info("Found {} elements in DB", visaApplicationFormEntities.size());
         visaApplicationFormEntities.forEach(visaApplicationForm -> visaApplicationForm.setStatus(VisaStatus.SEND));
