@@ -2,18 +2,20 @@ package com.rvafin.visacenter.controller;
 
 import com.rvafin.visacenter.dto.request.TouristRequestDTO;
 import com.rvafin.visacenter.service.interfaces.TouristService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
-@Controller("/tourist")
+@Controller
+@RequestMapping("/tourist")
 @CrossOrigin
 public class TouristController {
+
+    private final static Logger log = LoggerFactory.getLogger(TouristController.class);
 
     private final TouristService touristService;
 
@@ -24,18 +26,18 @@ public class TouristController {
         this.touristService = touristService;
     }
 
-
     @PostMapping("/create")
-    public ResponseEntity<?> createNewTourist(TouristRequestDTO touristRequestDTO){
+    public ResponseEntity<?> createNewTourist(@RequestBody TouristRequestDTO touristRequestDTO){
         try {
-            return ResponseEntity.ok(touristService.createNewTourist(touristRequestDTO));
+            log.info(touristRequestDTO.toString());
+            return ResponseEntity.status(HttpStatus.CREATED).body(touristService.createNewTourist(touristRequestDTO));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
     @PostMapping("/edit/{id}")
-    public ResponseEntity<?> editTourist(TouristRequestDTO touristRequestDTO, @PathVariable Long id){
+    public ResponseEntity<?> editTourist(@RequestBody TouristRequestDTO touristRequestDTO, @PathVariable Long id){
         try {
             return ResponseEntity.ok(touristService.editTouristInfo(touristRequestDTO, id));
         }catch (Exception e){

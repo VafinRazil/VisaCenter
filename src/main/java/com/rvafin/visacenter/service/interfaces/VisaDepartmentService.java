@@ -17,7 +17,7 @@ public interface VisaDepartmentService {
 
     List<VisaApplicationResponseDTO> getVisaApplications(Long countryId, LocalDate startDate, LocalDate endDate, VisaStatus visaStatus);
 
-    List<VisaApplicationResponseDTO> getVisaApplicationsForClient();
+    Long getTouristIdByApplicationId(Long applicationId);
 
     VisaApplicationResponseDTO getVisaApplicationById(long id);
 

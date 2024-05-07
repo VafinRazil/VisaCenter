@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
-@Controller("/visa/department/")
+@Controller
+@RequestMapping("/visa/department/")
 @CrossOrigin
 public class VisaDepartmentController {
 
@@ -30,7 +31,7 @@ public class VisaDepartmentController {
     }
 
     @PostMapping("/new/application")
-    public ResponseEntity<?> createVisaApplicationForm(VisaApplicationRequestDTO visaApplicationRequestDTO){
+    public ResponseEntity<?> createVisaApplicationForm(@RequestBody VisaApplicationRequestDTO visaApplicationRequestDTO){
         try {
             return ResponseEntity.ok(visaDepartmentService.createVisaApplication(visaApplicationRequestDTO));
         }catch (Exception e){
@@ -39,10 +40,10 @@ public class VisaDepartmentController {
         }
     }
 
-    @GetMapping("/all/client/applications")
-    public ResponseEntity<?> getVisaApplicationsForClient(){
+    @GetMapping("/application/{id}/touristId")
+    public ResponseEntity<?> getTouristIdByApplicationId(@PathVariable Long id){
         try {
-            return ResponseEntity.ok(visaDepartmentService.getVisaApplicationsForClient());
+            return ResponseEntity.ok(visaDepartmentService.getTouristIdByApplicationId(id));
         }catch (Exception e){
             log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
@@ -86,7 +87,10 @@ public class VisaDepartmentController {
     }
 
     @PutMapping("/application/{id}")
-    public ResponseEntity<?> changeVisaApplicationInfo(@PathVariable Long id, VisaApplicationRequestDTO visaApplicationRequestDTO){
+    public ResponseEntity<?> changeVisaApplicationInfo(
+            @PathVariable Long id,
+            @RequestBody VisaApplicationRequestDTO visaApplicationRequestDTO
+    ){
         try {
             return ResponseEntity.ok(visaDepartmentService.changeVisaApplication(visaApplicationRequestDTO, id));
         }catch (Exception e){

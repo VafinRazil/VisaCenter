@@ -90,9 +90,9 @@ public class VisaDepartmentServiceImpl implements VisaDepartmentService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<VisaApplicationResponseDTO> getVisaApplicationsForClient() {
-        List<VisaApplicationFormEntity> visaApplicationFormEntities = visaApplicationFormEntityRepository.findVisaApplicationFormEntitiesByCreatorId(0L);
-        return visaApplicationFormMapper.toVisaApplicationResponseDTOList(visaApplicationFormEntities);
+    public Long getTouristIdByApplicationId(Long applicationId) {
+        VisaApplicationFormEntity visaApplication = visaApplicationFormEntityRepository.findById(applicationId).orElseThrow();
+        return visaApplication.getTourist().getId();
     }
 
     @Transactional(readOnly = true)

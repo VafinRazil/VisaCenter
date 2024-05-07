@@ -25,6 +25,8 @@ public class TouristEntity implements StringFormatter {
     @FieldParams(position = 4)
     private String surname;
 
+    private String patronymic;
+
     @FieldParams(position = 2, format = "dd.MM.yyyy")
     private LocalDate birthday;
 
@@ -35,8 +37,6 @@ public class TouristEntity implements StringFormatter {
     @FieldParams(position = 1)
     @Column(name = "international_passport_series")
     private String internPassSeries;
-
-    private String patronymic;
 
     private String email;
 

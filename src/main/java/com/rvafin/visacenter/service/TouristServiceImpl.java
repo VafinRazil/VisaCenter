@@ -6,7 +6,6 @@ import com.rvafin.visacenter.entity.TouristEntity;
 import com.rvafin.visacenter.mapper.TouristMapper;
 import com.rvafin.visacenter.repository.TouristEntityRepository;
 import com.rvafin.visacenter.service.interfaces.TouristService;
-import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,21 +18,29 @@ public class TouristServiceImpl implements TouristService {
     private static Logger log = LoggerFactory.getLogger(TouristServiceImpl.class);
 
     private final TouristEntityRepository touristEntityRepository;
-    private final TouristMapper touristMapper = Mappers.getMapper(TouristMapper.class);
+
+    private final TouristMapper touristMapper;
 
     @Autowired
     public TouristServiceImpl(
-            TouristEntityRepository touristEntityRepository
+            TouristEntityRepository touristEntityRepository,
+            TouristMapper touristMapper
     ) {
         this.touristEntityRepository = touristEntityRepository;
+        this.touristMapper = touristMapper;;
     }
 
     @Transactional
     @Override
     public boolean createNewTourist(TouristRequestDTO touristRequestDTO) {
-        TouristEntity tourist = touristMapper.toTouristEntity(touristRequestDTO);
-        touristEntityRepository.save(tourist);
-        return true;
+        try {
+            TouristEntity tourist = touristMapper.toTouristEntity(touristRequestDTO);
+            touristEntityRepository.save(tourist);
+            return true;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
+        }
     }
 
     @Transactional

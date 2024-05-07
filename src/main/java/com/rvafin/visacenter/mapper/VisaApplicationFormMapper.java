@@ -3,6 +3,7 @@ package com.rvafin.visacenter.mapper;
 import com.rvafin.visacenter.dto.request.VisaApplicationRequestDTO;
 import com.rvafin.visacenter.dto.response.VisaApplicationResponseDTO;
 import com.rvafin.visacenter.entity.CountryEntity;
+import com.rvafin.visacenter.entity.TouristEntity;
 import com.rvafin.visacenter.entity.VisaApplicationFormEntity;
 import com.rvafin.visacenter.repository.CountryEntityRepository;
 import com.rvafin.visacenter.repository.TouristEntityRepository;
@@ -21,13 +22,14 @@ public abstract class VisaApplicationFormMapper {
     @Autowired
     protected CountryEntityRepository countryEntityRepository;
 
-    @Mapping(target = "tourist",
-            expression = "java(touristEntityRepository.findById(visaApplicationRequestDTO.getTouristId()).orElseThrow(() -> new NoSuchElementException(\"No such tourist in DB by id \" + visaApplicationRequestDTO.getTouristId())))")
-    @Mapping(target = "travelCountry",
-            expression = "java(countryEntityRepository.findById(visaApplicationRequestDTO.getTravelCountryId()).orElseThrow(() -> new NoSuchElementException(\"No such country in DB by id \" + visaApplicationRequestDTO.getTravelCountryId())))")
+
+    @BeanMapping(qualifiedByName = "createNewVisaApplication")
+    @Mapping(target = "tourist", ignore = true)
+    @Mapping(target = "travelCountry", ignore = true)
     public abstract VisaApplicationFormEntity toVisaApplicationFormEntity(
             VisaApplicationRequestDTO visaApplicationRequestDTO
     ) throws NoSuchElementException;
+
 
     @Mapping(target = "fullName", expression = "java(visaApplicationFormEntity.getTourist().getFullName())")
     @Mapping(target = "birthday", expression = "java(visaApplicationFormEntity.getTourist().getBirthday())")
@@ -36,12 +38,34 @@ public abstract class VisaApplicationFormMapper {
             VisaApplicationFormEntity visaApplicationFormEntity
     );
 
+    @BeanMapping(qualifiedByName = "updateVisaApplication")
+    @Mapping(target = "travelCountry", ignore = true)
+    public abstract VisaApplicationFormEntity updateVisaApplicationFormEntity(
+            @MappingTarget VisaApplicationFormEntity visaApplicationForm,
+            VisaApplicationRequestDTO visaApplicationRequestDTO
+    );
+
     public abstract List<VisaApplicationResponseDTO> toVisaApplicationResponseDTOList(
             List<VisaApplicationFormEntity> visaApplicationFormEntities
     );
 
+    @Named("createNewVisaApplication")
     @BeforeMapping
-    public void setCountryEntityWithCondition(
+    public void createNewVisaApplication(
+            @MappingTarget VisaApplicationFormEntity visaApplicationForm,
+            VisaApplicationRequestDTO visaApplicationRequestDTO
+    ){
+        TouristEntity tourist = touristEntityRepository.findById(visaApplicationRequestDTO.getTouristId())
+                .orElseThrow(() -> new NoSuchElementException("No such tourist in DB by id " + visaApplicationRequestDTO.getTouristId()));
+        CountryEntity country = countryEntityRepository.findById(visaApplicationRequestDTO.getTravelCountryId())
+                .orElseThrow(() -> new NoSuchElementException("No such country in DB by id " + visaApplicationRequestDTO.getTravelCountryId()));
+        visaApplicationForm.setTourist(tourist);
+        visaApplicationForm.setTravelCountry(country);
+    }
+
+    @Named("updateVisaApplication")
+    @BeforeMapping
+    public void updateVisaApplication(
             @MappingTarget VisaApplicationFormEntity visaApplicationForm,
             VisaApplicationRequestDTO visaApplicationRequestDTO
     ){
@@ -49,12 +73,10 @@ public abstract class VisaApplicationFormMapper {
             CountryEntity country = countryEntityRepository.findById(visaApplicationRequestDTO.getTravelCountryId()).orElseThrow();
             visaApplicationForm.setTravelCountry(country);
         }
+        if (Long.compare(visaApplicationForm.getTourist().getId(), visaApplicationRequestDTO.getTouristId()) != 0) {
+            TouristEntity tourist = touristEntityRepository.findById(visaApplicationRequestDTO.getTouristId()).orElseThrow();
+            visaApplicationForm.setTourist(tourist);
+        }
     }
-
-    @Mapping(target = "travelCountry", ignore = true)
-    public abstract VisaApplicationFormEntity updateVisaApplicationFormEntity(
-            @MappingTarget VisaApplicationFormEntity visaApplicationForm,
-            VisaApplicationRequestDTO visaApplicationRequestDTO
-    );
 
 }

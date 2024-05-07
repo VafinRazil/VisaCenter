@@ -95,4 +95,19 @@ public class TouristRequestDTO {
     public void setInternPassSeries(int internPassSeries) {
         this.internPassSeries = internPassSeries;
     }
+
+    @Override
+    public String toString() {
+        return "TouristRequestDTO{" +
+                "firstname='" + firstname + '\'' +
+                ", surname='" + surname + '\'' +
+                ", patronymic='" + patronymic + '\'' +
+                ", birthday=" + birthday +
+                ", email='" + email + '\'' +
+                ", countryId=" + countryId +
+                ", expirationDatePass=" + expirationDatePass +
+                ", internPassNum='" + internPassNum + '\'' +
+                ", internPassSeries=" + internPassSeries +
+                '}';
+    }
 }
