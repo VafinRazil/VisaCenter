@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping("/tourist")
 @CrossOrigin
 public class TouristController {
@@ -20,14 +20,13 @@ public class TouristController {
     private final TouristService touristService;
 
     @Autowired
-    public TouristController(
-            TouristService touristService
-    ) {
+    public TouristController(TouristService touristService) {
         this.touristService = touristService;
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createNewTourist(@RequestBody TouristRequestDTO touristRequestDTO){
+    public ResponseEntity<?> createNewTourist(
+            @RequestBody TouristRequestDTO touristRequestDTO){
         try {
             log.info(touristRequestDTO.toString());
             return ResponseEntity.status(HttpStatus.CREATED).body(touristService.createNewTourist(touristRequestDTO));
@@ -37,7 +36,9 @@ public class TouristController {
     }
 
     @PostMapping("/edit/{id}")
-    public ResponseEntity<?> editTourist(@RequestBody TouristRequestDTO touristRequestDTO, @PathVariable Long id){
+    public ResponseEntity<?> editTourist(
+            @RequestBody TouristRequestDTO touristRequestDTO,
+            @PathVariable Long id){
         try {
             return ResponseEntity.ok(touristService.editTouristInfo(touristRequestDTO, id));
         }catch (Exception e){
