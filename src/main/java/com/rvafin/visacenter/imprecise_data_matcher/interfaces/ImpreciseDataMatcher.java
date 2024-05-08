@@ -7,3 +7,4 @@ public interface ImpreciseDataMatcher<R, T extends StringFormatter, V extends St
 
     R impreciseMatch(T data1, V data2, MatchingAlgorithm<R> algorithm);
 }
+

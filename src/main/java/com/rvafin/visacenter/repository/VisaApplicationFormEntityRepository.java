@@ -16,6 +16,4 @@ public interface VisaApplicationFormEntityRepository extends JpaRepository<VisaA
             VisaStatus status);
 
     List<VisaApplicationFormEntity> findVisaApplicationFormEntitiesByStatus(VisaStatus status);
-
-    List<VisaApplicationFormEntity> findVisaApplicationFormEntitiesByCreatorId(Long creatorId);
 }

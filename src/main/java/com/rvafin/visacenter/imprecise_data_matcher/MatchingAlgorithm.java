@@ -4,3 +4,4 @@ public interface MatchingAlgorithm<R> {
 
     R apply(String line1, String line2);
 }
+

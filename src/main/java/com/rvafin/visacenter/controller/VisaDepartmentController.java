@@ -31,7 +31,8 @@ public class VisaDepartmentController {
     }
 
     @PostMapping("/new/application")
-    public ResponseEntity<?> createVisaApplicationForm(@RequestBody VisaApplicationRequestDTO visaApplicationRequestDTO){
+    public ResponseEntity<?> createVisaApplicationForm(
+            @RequestBody VisaApplicationRequestDTO visaApplicationRequestDTO){
         try {
             return ResponseEntity.ok(visaDepartmentService.createVisaApplication(visaApplicationRequestDTO));
         }catch (Exception e){
@@ -52,7 +53,7 @@ public class VisaDepartmentController {
 
 
     @GetMapping("/applications")
-    public ResponseEntity<?> getVisaApplicationsForEmployee(
+    public ResponseEntity<?> getVisaApplications(
             @RequestParam Long countryId,
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate,
@@ -100,7 +101,8 @@ public class VisaDepartmentController {
     }
 
     @PostMapping("/send/applications/visaCenter")
-    public ResponseEntity<?> sendVisaApplicationsToVisaCenter(@RequestParam("id[]") List<Long> ids){
+    public ResponseEntity<?> sendVisaApplicationsToVisaCenter(
+            @RequestParam("id[]") List<Long> ids){
         try {
             visaDepartmentService.sendVisaApplicationsToVisaCenter(ids);
             return ResponseEntity.ok().build();
@@ -119,14 +121,5 @@ public class VisaDepartmentController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
         }
     }
-
-    @GetMapping("/visas")
-    public ResponseEntity<?> getVisasForClient(){
-        try {
-            return ResponseEntity.ok(null);
-        }catch (Exception e){
-            log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
-        }
-    }
 }
+

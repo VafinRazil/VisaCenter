@@ -19,8 +19,10 @@ public interface StringFormatter {
         return Arrays.stream(this.getClass().getDeclaredFields())
                 .peek(field -> field.setAccessible(true))
                 .filter(field -> field.isAnnotationPresent(FieldParams.class))
-                .sorted((o1, o2) -> -Integer.compare(o1.getAnnotation(FieldParams.class).position(), o2.getAnnotation(FieldParams.class).position()))
-                .map(this::formatLine)
+                .sorted((o1, o2) -> -Integer.compare(
+                        o1.getAnnotation(FieldParams.class).position()
+                        , o2.getAnnotation(FieldParams.class).position())
+                ).map(this::formatLine)
                 .collect(Collectors.joining(delimiter));
     }
 

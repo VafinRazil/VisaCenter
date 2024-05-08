@@ -19,13 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @ConditionalOnProperty(value = "visa.generate.enable", havingValue = "true", matchIfMissing = true)
 @Service
-public class VisaDepartmentHandler {
+public class VisaCenterHandler {
 
-    private static Logger log = LoggerFactory.getLogger(VisaDepartmentHandler.class);
+    private static Logger log = LoggerFactory.getLogger(VisaCenterHandler.class);
 
     private final VisaApplicationFormEntityRepository visaApplicationFormEntityRepository;
     private final EVisaEntityRepository eVisaEntityRepository;
@@ -33,7 +32,7 @@ public class VisaDepartmentHandler {
     private final EVisaMapper eVisaMapper = new EVisaMapperImpl();
 
     @Autowired
-    public VisaDepartmentHandler(
+    public VisaCenterHandler(
             VisaApplicationFormEntityRepository visaApplicationFormEntityRepository,
             EVisaEntityRepository eVisaEntityRepository,
             VisaGenerateConfiguration visaGenerateConfiguration
@@ -50,7 +49,6 @@ public class VisaDepartmentHandler {
     @Scheduled(cron = "*/${visa.generate.period.second} * * * * *")
     @Transactional
     public void everyTenSeconds(){
-        log.info("job!");
         List<VisaApplicationFormEntity> visaApplicationFormEntities = visaApplicationFormEntityRepository.findVisaApplicationFormEntitiesByStatus(VisaStatus.SEND);
         for (VisaApplicationFormEntity visaApplicationForm: visaApplicationFormEntities){
             EVisaEntity eVisaEntity = eVisaMapper.toEVisaEntity(visaApplicationForm);

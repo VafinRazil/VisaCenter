@@ -9,3 +9,5 @@ public interface DataMatcherService extends ImpreciseDataMatcher<Double, EVisaEn
 
     MatchingResultDTO matchVisasByTourists();
 }
+
+
