@@ -3,11 +3,8 @@ package com.rvafin.visacenter.entity;
 import com.rvafin.visacenter.enums.VisaStatus;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,17 +12,13 @@ import java.time.LocalDateTime;
 public class VisaApplicationFormEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne(fetch = FetchType.LAZY)
     private TouristEntity tourist;
 
     private String profession;
-
-    @Column(name = "intern_pass_issue_date")
-    private LocalDate passportIssueDate;
 
     @ManyToOne
     private CountryEntity travelCountry;
@@ -47,6 +40,8 @@ public class VisaApplicationFormEntity {
     @UpdateTimestamp
     private LocalDateTime updatedOn;
 
+    @ManyToOne
+    private UserEntity creator;
 
     public VisaApplicationFormEntity() {}
 
@@ -56,6 +51,14 @@ public class VisaApplicationFormEntity {
 
     public Long getId() {
         return id;
+    }
+
+    public UserEntity getCreator() {
+        return creator;
+    }
+
+    public void setCreator(UserEntity creator) {
+        this.creator = creator;
     }
 
     public String getProfession() {
@@ -80,14 +83,6 @@ public class VisaApplicationFormEntity {
 
     public void setTravelCountry(CountryEntity travelCountry) {
         this.travelCountry = travelCountry;
-    }
-
-    public LocalDate getPassportIssueDate() {
-        return passportIssueDate;
-    }
-
-    public void setPassportIssueDate(LocalDate passportIssueDate) {
-        this.passportIssueDate = passportIssueDate;
     }
 
     public String getFamilyStatus() {

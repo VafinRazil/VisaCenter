@@ -1,10 +1,13 @@
-package com.rvafin.visacenter.util;
+package com.rvafin.visacenter.imprecise_data_matcher.util;
+
+import com.rvafin.visacenter.imprecise_data_matcher.MatchingAlgorithm;
 
 import java.util.Arrays;
 
-public class JaroWinklerDistance {
+public class JaroWinklerDistance implements MatchingAlgorithm<Double> {
 
-    public static Double apply(final CharSequence left, final CharSequence right) {
+    @Override
+    public Double apply(final String left, final String right) {
         final double defaultScalingFactor = 0.1;
         final double percentageRoundValue = 100.0;
 

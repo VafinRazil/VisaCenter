@@ -1,11 +1,13 @@
 package com.rvafin.visacenter.service.interfaces;
 
-import com.rvafin.visacenter.util.MatchingResult;
+import com.rvafin.visacenter.imprecise_data_matcher.interfaces.ImpreciseDataMatcher;
+import com.rvafin.visacenter.dto.response.MatchingResultDTO;
+import com.rvafin.visacenter.entity.EVisaEntity;
+import com.rvafin.visacenter.entity.TouristEntity;
 
-import java.time.LocalDate;
+public interface DataMatcherService extends ImpreciseDataMatcher<Double, EVisaEntity, TouristEntity> {
 
-public interface DataMatcherService {
-    MatchingResult matchVisasByTourists(LocalDate startDate, LocalDate finalDate);
-
-    MatchingResult matchVisasByTourists();
+    MatchingResultDTO matchVisasByTourists();
 }
+
+

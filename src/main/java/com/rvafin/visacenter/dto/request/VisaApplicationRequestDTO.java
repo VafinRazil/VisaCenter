@@ -1,34 +1,21 @@
 package com.rvafin.visacenter.dto.request;
 
-import com.rvafin.visacenter.entity.CountryEntity;
-
 import java.time.LocalDate;
 
-public class CreateVisaApplicationRequestDTO {
-
-    private Long id;
+public class VisaApplicationRequestDTO {
 
     private Long touristId;
 
     private String profession;
 
-    private LocalDate passportIssueDate;
 
-    private CountryEntity travelCountry;
+    private Long travelCountryId;
 
     private String familyStatus;
 
     private String zayaId;
 
-    public CreateVisaApplicationRequestDTO(){}
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public VisaApplicationRequestDTO(){}
 
     public Long getTouristId() {
         return touristId;
@@ -46,20 +33,12 @@ public class CreateVisaApplicationRequestDTO {
         this.profession = profession;
     }
 
-    public LocalDate getPassportIssueDate() {
-        return passportIssueDate;
+    public Long getTravelCountryId() {
+        return travelCountryId;
     }
 
-    public void setPassportIssueDate(LocalDate passportIssueDate) {
-        this.passportIssueDate = passportIssueDate;
-    }
-
-    public CountryEntity getTravelCountry() {
-        return travelCountry;
-    }
-
-    public void setTravelCountry(CountryEntity travelCountry) {
-        this.travelCountry = travelCountry;
+    public void setTravelCountryId(Long travelCountryId) {
+        this.travelCountryId = travelCountryId;
     }
 
     public String getFamilyStatus() {
@@ -76,5 +55,16 @@ public class CreateVisaApplicationRequestDTO {
 
     public void setZayaId(String zayaId) {
         this.zayaId = zayaId;
+    }
+
+    @Override
+    public String toString() {
+        return "visa application\n{" +
+                "\ntouristId = " + touristId +
+                "\n, profession = '" + profession + '\'' +
+                "\n, travelCountryId ="  + travelCountryId +
+                "\n, familyStatus = '" + familyStatus + '\'' +
+                "\n, zayaId = '" + zayaId + '\'' +
+                "\n}";
     }
 }

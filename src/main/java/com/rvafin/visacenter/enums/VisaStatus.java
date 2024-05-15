@@ -4,6 +4,7 @@ public enum VisaStatus {
     CREATE,
     REVIEWED,
     SEND,
+    REMOVED,
     DENIED,
-    APPROVED
+    READY
 }

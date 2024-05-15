@@ -1,26 +1,42 @@
 package com.rvafin.visacenter.entity;
 
+import com.rvafin.visacenter.enums.VisaStatus;
+import com.rvafin.visacenter.imprecise_data_matcher.annotations.FieldParams;
+import com.rvafin.visacenter.imprecise_data_matcher.interfaces.StringFormatter;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 @Entity
 @Table(name = "tourist")
-public class TouristEntity{
+public class TouristEntity implements StringFormatter {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @FieldParams(position = 3)
     private String firstname;
 
+    @FieldParams(position = 4)
     private String surname;
 
     private String patronymic;
 
+    @FieldParams(position = 2, format = "dd.MM.yyyy")
     private LocalDate birthday;
+
+    @FieldParams(position = 0)
+    @Column(name = "international_passport_num")
+    private int internPassNum;
+
+    @FieldParams(position = 1)
+    @Column(name = "international_passport_series")
+    private String internPassSeries;
 
     private String email;
 
@@ -30,14 +46,11 @@ public class TouristEntity{
     @Column(name = "expiration_date_passport")
     private LocalDate expirationDatePass;
 
-    @Column(name = "international_passport_num")
-    private String internPassNum;
-
-    @Column(name = "international_passport_series")
-    private int internPassSeries;
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tourist")
-    private List<EVisaEntity> eVisa = new ArrayList<>();
+    private List<EVisaEntity> eVisas = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tourist")//мб нужно будет указать fetchType Eager
+    private List<VisaApplicationFormEntity> visaApplicationFormEntities = new ArrayList<>();
 
     public TouristEntity(){}
 
@@ -88,6 +101,13 @@ public class TouristEntity{
     public void setEmail(String email) {
         this.email = email;
     }
+    public void addVisaApplication(VisaApplicationFormEntity visaApplicationForm){
+        this.visaApplicationFormEntities.add(visaApplicationForm);
+    }
+
+    public void addEVisa(EVisaEntity eVisa) {
+        this.eVisas.add(eVisa);
+    }
 
     public CountryEntity getCountry() {
         return country;
@@ -105,27 +125,48 @@ public class TouristEntity{
         this.expirationDatePass = expirationDatePass;
     }
 
-    public String getInternPassNum() {
+    public int getInternPassNum() {
         return internPassNum;
     }
 
-    public void setInternPassNum(String internPassNum) {
+    public void setInternPassNum(int internPassNum) {
         this.internPassNum = internPassNum;
     }
 
-    public int getInternPassSeries() {
+    public String getInternPassSeries() {
         return internPassSeries;
     }
 
-    public void setInternPassSeries(int internPassSeries) {
+    public void setInternPassSeries(String internPassSeries) {
         this.internPassSeries = internPassSeries;
     }
 
-    public List<EVisaEntity> geteVisa() {
-        return eVisa;
+    public List<EVisaEntity> getEVisas() {
+        return eVisas;
     }
 
-    public void seteVisa(List<EVisaEntity> eVisa) {
-        this.eVisa = eVisa;
+    public void setEVisas(List<EVisaEntity> eVisas) {
+        this.eVisas = eVisas;
+    }
+
+    public List<VisaApplicationFormEntity> getVisaApplicationFormEntities() {
+        return visaApplicationFormEntities;
+    }
+
+    public void setVisaApplicationFormEntities(List<VisaApplicationFormEntity> visaApplicationFormEntities) {
+        this.visaApplicationFormEntities = visaApplicationFormEntities;
+    }
+
+    public String getFullName(){
+        return String.format("%s %s %s", surname, firstname, patronymic).toUpperCase(Locale.ENGLISH);
+    }
+
+    public Optional<VisaApplicationFormEntity> getSentVisaApplicationByCountryId(Long countryId){
+        return getVisaApplicationFormEntities()
+                .stream()
+                .filter(visaApplicationForm ->
+                        visaApplicationForm.getTravelCountry().getId().compareTo(countryId) == 0
+                                && visaApplicationForm.getStatus().equals(VisaStatus.SEND))
+                .findAny();
     }
 }

@@ -1,8 +1,8 @@
-package com.rvafin.visacenter.util;
+package com.rvafin.visacenter.dto.response;
 
 import java.util.List;
 
-public class MatchingResult {
+public class MatchingResultDTO {
 
     private int numMatched;
 
@@ -10,9 +10,9 @@ public class MatchingResult {
 
     private int totalNum;
 
-    private List<UnmappedFieldsInfo> unmappedFieldsInfoList;
+    private List<UnmappedFieldsInfoDTO> unmappedFieldsInfoList;
 
-    public MatchingResult(){}
+    public MatchingResultDTO(){}
 
     public int getNumMatched() {
         return numMatched;
@@ -38,11 +38,11 @@ public class MatchingResult {
         this.totalNum = totalNum;
     }
 
-    public List<UnmappedFieldsInfo> getUnmappedFieldsInfoList() {
+    public List<UnmappedFieldsInfoDTO> getUnmappedFieldsInfoList() {
         return unmappedFieldsInfoList;
     }
 
-    public void setUnmappedFieldsInfoList(List<UnmappedFieldsInfo> unmappedFieldsInfoList) {
+    public void setUnmappedFieldsInfoList(List<UnmappedFieldsInfoDTO> unmappedFieldsInfoList) {
         this.unmappedFieldsInfoList = unmappedFieldsInfoList;
     }
 }
