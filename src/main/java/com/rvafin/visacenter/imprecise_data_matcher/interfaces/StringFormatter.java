@@ -9,8 +9,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public interface StringFormatter {
@@ -18,20 +18,17 @@ public interface StringFormatter {
     default String format(String delimiter) {
         return Arrays.stream(this.getClass().getDeclaredFields())
                 .peek(field -> field.setAccessible(true))
-                .filter(field -> field.isAnnotationPresent(FieldParams.class))
-                .sorted((o1, o2) -> -Integer.compare(
-                        o1.getAnnotation(FieldParams.class).position()
-                        , o2.getAnnotation(FieldParams.class).position())
-                ).map(this::formatLine)
+                .filter(field -> field.getAnnotation(FieldParams.class) != null)
+                .sorted(Comparator.comparingInt(o -> o.getAnnotation(FieldParams.class).position())).map(this::formatLine)
                 .collect(Collectors.joining(delimiter));
     }
 
-    private String formatLine(Field field){
+    private String formatLine(Field field) {
         String formatedLine = "";
         if (field != null){
             String format = getFormatOfField(field);
-            if (!format.isBlank()) {
-                try {
+            try {
+                if (!format.isBlank()) {
                     if (field.getType() == LocalDate.class) {
                         formatedLine = ((LocalDate) field.get(this)).format(DateTimeFormatter.ofPattern(format));
                     } else if (field.getType() == LocalDateTime.class) {
@@ -41,15 +38,18 @@ public interface StringFormatter {
                         DecimalFormat decimalFormat = new DecimalFormat(format, otherSymbols);
                         return decimalFormat.format(field.get(this));
                     }
-                }catch (Exception ignored){}
-            }
+                }else{
+                    formatedLine = String.valueOf(field.get(this));
+                }
+            }catch (Exception ignored){}
         }return formatedLine;
     }
 
     private String getFormatOfField(Field field){
-        Optional<String> format = Optional.empty();
-        if (field.getAnnotation(FieldParams.class).format() != null && !field.getAnnotation(FieldParams.class).format().isBlank()){
-            format = Optional.of(field.getAnnotation(FieldParams.class).format());
-        }return format.get();
+        String format = "";
+        if (field.getAnnotation(FieldParams.class).format() != null && !field.getAnnotation(FieldParams.class).format().isEmpty()) {
+            format = field.getAnnotation(FieldParams.class).format();
+        }
+        return format;
     }
 }

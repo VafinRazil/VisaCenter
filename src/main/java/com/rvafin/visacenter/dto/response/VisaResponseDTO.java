@@ -18,6 +18,11 @@ public class VisaResponseDTO {
 
     private String countryName;
 
+    private int passNum;
+
+    private String passSeries;
+    private String zayaId;
+
     public VisaResponseDTO(){}
 
     public Long getId() {
@@ -74,5 +79,29 @@ public class VisaResponseDTO {
 
     public void setCountryName(String countryName) {
         this.countryName = countryName;
+    }
+
+    public int getPassNum() {
+        return passNum;
+    }
+
+    public void setPassNum(int passNum) {
+        this.passNum = passNum;
+    }
+
+    public String getPassSeries() {
+        return passSeries;
+    }
+
+    public void setPassSeries(String passSeries) {
+        this.passSeries = passSeries;
+    }
+
+    public String getZayaId() {
+        return zayaId;
+    }
+
+    public void setZayaId(String zayaId) {
+        this.zayaId = zayaId;
     }
 }

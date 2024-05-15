@@ -33,14 +33,9 @@ public class TouristServiceImpl implements TouristService {
     @Transactional
     @Override
     public boolean createNewTourist(TouristRequestDTO touristRequestDTO) {
-        try {
-            TouristEntity tourist = touristMapper.toTouristEntity(touristRequestDTO);
-            touristEntityRepository.save(tourist);
-            return true;
-        }catch (Exception e){
-            log.error(e.getMessage());
-            return false;
-        }
+        TouristEntity tourist = touristMapper.toTouristEntity(touristRequestDTO);
+        touristEntityRepository.save(tourist);
+        return true;
     }
 
     @Transactional

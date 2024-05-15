@@ -8,7 +8,6 @@ public class VisaApplicationRequestDTO {
 
     private String profession;
 
-    private LocalDate passportIssueDate;
 
     private Long travelCountryId;
 
@@ -32,14 +31,6 @@ public class VisaApplicationRequestDTO {
 
     public void setProfession(String profession) {
         this.profession = profession;
-    }
-
-    public LocalDate getPassportIssueDate() {
-        return passportIssueDate;
-    }
-
-    public void setPassportIssueDate(LocalDate passportIssueDate) {
-        this.passportIssueDate = passportIssueDate;
     }
 
     public Long getTravelCountryId() {
@@ -71,7 +62,6 @@ public class VisaApplicationRequestDTO {
         return "visa application\n{" +
                 "\ntouristId = " + touristId +
                 "\n, profession = '" + profession + '\'' +
-                "\n, passportIssueDate = " + passportIssueDate +
                 "\n, travelCountryId ="  + travelCountryId +
                 "\n, familyStatus = '" + familyStatus + '\'' +
                 "\n, zayaId = '" + zayaId + '\'' +

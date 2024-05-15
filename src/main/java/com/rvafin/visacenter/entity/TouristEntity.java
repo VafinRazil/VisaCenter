@@ -101,6 +101,9 @@ public class TouristEntity implements StringFormatter {
     public void setEmail(String email) {
         this.email = email;
     }
+    public void addVisaApplication(VisaApplicationFormEntity visaApplicationForm){
+        this.visaApplicationFormEntities.add(visaApplicationForm);
+    }
 
     public void addEVisa(EVisaEntity eVisa) {
         this.eVisas.add(eVisa);

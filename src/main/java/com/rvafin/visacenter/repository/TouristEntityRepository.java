@@ -8,13 +8,12 @@ import java.util.List;
 
 public interface TouristEntityRepository extends JpaRepository<TouristEntity, Long> {
 
-    @Query("SELECT TouristEntity FROM TouristEntity t " +
-            "LEFT JOIN VisaApplicationFormEntity v ON t.id=v.id " +
+    @Query("SELECT t FROM TouristEntity t " +
+            "LEFT JOIN VisaApplicationFormEntity v ON t.id=v.tourist.id " +
             "WHERE v.status = 'SEND'")
     List<TouristEntity> findTouristEntitiesWithVisaInStatusSend();
 
-    List<TouristEntity> findTouristEntitiesByInternPassNumAndInternPassSeriesAndCountryId(
+    List<TouristEntity> findTouristEntitiesByInternPassNumAndInternPassSeries(
             int internPassNum,
-            String internPassSeries,
-            Long countryId);
+            String internPassSeries);
 }

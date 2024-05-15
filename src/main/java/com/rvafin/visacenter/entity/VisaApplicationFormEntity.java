@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,9 +19,6 @@ public class VisaApplicationFormEntity {
     private TouristEntity tourist;
 
     private String profession;
-
-    @Column(name = "intern_pass_issue_date")
-    private LocalDate passportIssueDate;
 
     @ManyToOne
     private CountryEntity travelCountry;
@@ -87,14 +83,6 @@ public class VisaApplicationFormEntity {
 
     public void setTravelCountry(CountryEntity travelCountry) {
         this.travelCountry = travelCountry;
-    }
-
-    public LocalDate getPassportIssueDate() {
-        return passportIssueDate;
-    }
-
-    public void setPassportIssueDate(LocalDate passportIssueDate) {
-        this.passportIssueDate = passportIssueDate;
     }
 
     public String getFamilyStatus() {

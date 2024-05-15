@@ -42,6 +42,7 @@ public class TouristController {
         try {
             return ResponseEntity.ok(touristService.editTouristInfo(touristRequestDTO, id));
         }catch (Exception e){
+            log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
     }

@@ -28,4 +28,6 @@ public interface VisaDepartmentService {
     List<VisaResponseDTO> getVisas(Long countryId, LocalDate startDate, LocalDate endDate);
 
     VisaResponseDTO getVisaById(Long id);
+
+    void matchVisasByTourists();
 }

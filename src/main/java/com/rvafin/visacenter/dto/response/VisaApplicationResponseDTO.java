@@ -14,8 +14,6 @@ public class VisaApplicationResponseDTO {
 
     private String fullName;
 
-    private LocalDate passportIssueDate;
-
     private LocalDate birthday;
 
     private String travelCountry;
@@ -44,14 +42,6 @@ public class VisaApplicationResponseDTO {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
-    }
-
-    public LocalDate getPassportIssueDate() {
-        return passportIssueDate;
-    }
-
-    public void setPassportIssueDate(LocalDate passportIssueDate) {
-        this.passportIssueDate = passportIssueDate;
     }
 
     public LocalDate getBirthday() {

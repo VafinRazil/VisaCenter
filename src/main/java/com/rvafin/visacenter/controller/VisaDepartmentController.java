@@ -102,7 +102,7 @@ public class VisaDepartmentController {
 
     @PostMapping("/send/applications/visaCenter")
     public ResponseEntity<?> sendVisaApplicationsToVisaCenter(
-            @RequestParam("id[]") List<Long> ids){
+            @RequestParam("id") List<Long> ids){
         try {
             visaDepartmentService.sendVisaApplicationsToVisaCenter(ids);
             return ResponseEntity.ok().build();
@@ -119,6 +119,17 @@ public class VisaDepartmentController {
         }catch (Exception e){
             log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/match/visas/by/tourists")
+    public ResponseEntity<?> matchVisasByTourists() {
+        try {
+            visaDepartmentService.matchVisasByTourists();
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());
         }
     }
 }

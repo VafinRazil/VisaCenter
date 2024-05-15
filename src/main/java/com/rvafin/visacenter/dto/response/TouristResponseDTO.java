@@ -20,9 +20,9 @@ public class TouristResponseDTO {
 
     private LocalDate expirationDatePass;
 
-    private String internPassNum;
+    private int internPassNum;
 
-    private int internPassSeries;
+    private String internPassSeries;
 
     public TouristResponseDTO() {
     }
@@ -91,19 +91,19 @@ public class TouristResponseDTO {
         this.expirationDatePass = expirationDatePass;
     }
 
-    public String getInternPassNum() {
+    public int getInternPassNum() {
         return internPassNum;
     }
 
-    public void setInternPassNum(String internPassNum) {
+    public void setInternPassNum(int internPassNum) {
         this.internPassNum = internPassNum;
     }
 
-    public int getInternPassSeries() {
+    public String getInternPassSeries() {
         return internPassSeries;
     }
 
-    public void setInternPassSeries(int internPassSeries) {
+    public void setInternPassSeries(String internPassSeries) {
         this.internPassSeries = internPassSeries;
     }
 }

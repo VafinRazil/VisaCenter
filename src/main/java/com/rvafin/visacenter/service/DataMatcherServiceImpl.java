@@ -27,7 +27,6 @@ public class DataMatcherServiceImpl implements DataMatcherService {
 
     private final TouristEntityRepository touristEntityRepository;
     private final EVisaEntityRepository visaEntityRepository;
-    private final VisaApplicationFormEntityRepository visaApplicationFormEntityRepository;
     private final ImpreciseDataMatcherConfiguration impreciseDataMatcherConfiguration;
 
     @Autowired
@@ -39,7 +38,6 @@ public class DataMatcherServiceImpl implements DataMatcherService {
     ) {
         this.touristEntityRepository = touristEntityRepository;
         this.visaEntityRepository = visaEntityRepository;
-        this.visaApplicationFormEntityRepository = visaApplicationFormEntityRepository;
         this.impreciseDataMatcherConfiguration = impreciseDataMatcherConfiguration;
     }
 
@@ -48,15 +46,14 @@ public class DataMatcherServiceImpl implements DataMatcherService {
     public MatchingResultDTO matchVisasByTourists() {
         MatchingResultDTO matchingResultDTO = new MatchingResultDTO();
         List<EVisaEntity> unmatchedVisas = new ArrayList<>();
+        List<EVisaEntity> visasWithoutTourists = visaEntityRepository.findEVisaEntitiesByTouristIsNull();
+        log.info("Found {} visas without tourists", visasWithoutTourists.size());
         visaEntityRepository.findEVisaEntitiesByTouristIsNull().forEach(visa -> {
             Optional<TouristEntity> touristOpt = getTouristForVisa(visa);
-            touristOpt.ifPresentOrElse(tourist -> {
-                Optional<VisaApplicationFormEntity> visaApplication = tourist.getSentVisaApplicationByCountryId(visa.getCountry().getId());
-                updateVisaApplicationStatus(visaApplication);
-                tourist.addEVisa(visa);
-                touristEntityRepository.save(tourist);
-            }, () -> unmatchedVisas.add(visa));
+            log.info("Tourist found: {}", touristOpt.isPresent());
+            touristOpt.ifPresentOrElse(tourist -> changeInfo(visa, tourist), () -> unmatchedVisas.add(visa));
         });
+        log.info("Unmatched visas: {}", unmatchedVisas.size());
         return matchUnmatchedVisas(unmatchedVisas, matchingResultDTO);
     }
 
@@ -66,9 +63,13 @@ public class DataMatcherServiceImpl implements DataMatcherService {
             TouristEntity tourist,
             MatchingAlgorithm<Double> algorithm
     ) {
+        log.info("Delimiter: {}", impreciseDataMatcherConfiguration.getDelimiter());
         String touristInfoInVisa = eVisa.format(impreciseDataMatcherConfiguration.getDelimiter());
         String touristInfoInEntity = tourist.format(impreciseDataMatcherConfiguration.getDelimiter());
-        return algorithm.apply(touristInfoInVisa, touristInfoInEntity);
+        log.info("Formated strings: visa - {} , tourist - {}", touristInfoInVisa, touristInfoInEntity);
+        double percentage = algorithm.apply(touristInfoInVisa, touristInfoInEntity);
+        log.info("Percentage: {}", percentage);
+        return percentage;
     }
 
     private MatchingResultDTO matchUnmatchedVisas(
@@ -76,26 +77,16 @@ public class DataMatcherServiceImpl implements DataMatcherService {
             MatchingResultDTO matchingResultDTO
     ){
         List<TouristEntity> touristsWithoutVisa = touristEntityRepository.findTouristEntitiesWithVisaInStatusSend();
+        log.info("Founded {} tourists without visa", touristsWithoutVisa.size());
         Set<Long> matchedTouristIds = new HashSet<>();
         unmatchedVisas.forEach(visa -> {
+            log.info("Matching visa with id {}", visa.getId());
             Optional<TouristEntity> touristOpt = getTouristForVisaOfTouristsList(visa, touristsWithoutVisa, matchedTouristIds);
             touristOpt.ifPresent(tourist -> {
-                Optional<VisaApplicationFormEntity> visaApplication = tourist.getSentVisaApplicationByCountryId(visa.getCountry().getId());
-                updateVisaApplicationStatus(visaApplication);
-                tourist.addEVisa(visa);
-                touristEntityRepository.save(tourist);
+                changeInfo(visa, tourist);
             });
         });
         return matchingResultDTO;
-    }
-
-    private void updateVisaApplicationStatus(
-            Optional<VisaApplicationFormEntity> visaApplication
-    ){
-        visaApplication.ifPresent(visaApplicationForm -> {
-            visaApplicationForm.setStatus(VisaStatus.READY);
-            visaApplicationFormEntityRepository.save(visaApplicationForm);
-        });
     }
 
     private Optional<TouristEntity> getTouristForVisaOfTouristsList(
@@ -104,19 +95,20 @@ public class DataMatcherServiceImpl implements DataMatcherService {
             Set<Long> matchedTouristIds
     ) {
         MatchingAlgorithm<Double> matchingAlgorithm = new JaroWinklerDistance();
+        log.info("Using matching algorithm: {}", matchingAlgorithm.getClass().getSimpleName());
         return touristsWithoutVisa
                 .stream()
                 .filter(tourist -> !matchedTouristIds.contains(tourist.getId()))
                 .takeWhile(tourist -> {
                     double percentage = impreciseMatch(eVisa, tourist, matchingAlgorithm);
-                    return !(percentage > 90d);
+                    return percentage <= 90d;
                 }).findAny();
     }
 
     private Optional<TouristEntity> getTouristForVisa(
             EVisaEntity eVisa
     ){
-        List<TouristEntity> touristEntities = touristEntityRepository.findTouristEntitiesByInternPassNumAndInternPassSeriesAndCountryId(eVisa.getPassNum(), eVisa.getPassSeries(), eVisa.getCountry().getId());
+        List<TouristEntity> touristEntities = touristEntityRepository.findTouristEntitiesByInternPassNumAndInternPassSeries(eVisa.getPassNum(), eVisa.getPassSeries());
         if (touristEntities.size() == 1){
             return Optional.ofNullable(touristEntities.get(0));
         }else{
@@ -127,5 +119,16 @@ public class DataMatcherServiceImpl implements DataMatcherService {
                             && tourist.getBirthday().isEqual(eVisa.getBirthday()))
                     .findAny();
         }
+    }
+
+    private void changeInfo(EVisaEntity visa, TouristEntity tourist) {
+        Optional<VisaApplicationFormEntity> visaApplication = tourist.getSentVisaApplicationByCountryId(visa.getCountry().getId());
+        visaApplication.ifPresent(visaApplicationForm -> {
+            visaApplicationForm.setStatus(VisaStatus.READY);
+            visa.setTourist(tourist);
+            tourist.addEVisa(visa);
+            tourist.addVisaApplication(visaApplicationForm);
+            touristEntityRepository.save(tourist);
+        });
     }
 }

@@ -23,6 +23,7 @@ public interface EVisaMapper {
     @Mapping(target = "passNum", expression = "java(visaApplicationForm.getTourist().getInternPassNum())")
     @Mapping(target = "passSeries", expression = "java(visaApplicationForm.getTourist().getInternPassSeries())")
     @Mapping(target = "country", source = "travelCountry")
+    @Mapping(target = "tourist", ignore = true)
     EVisaEntity toEVisaEntity(VisaApplicationFormEntity visaApplicationForm);
 
     @AfterMapping

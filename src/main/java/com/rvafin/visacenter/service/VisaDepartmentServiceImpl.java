@@ -9,6 +9,7 @@ import com.rvafin.visacenter.enums.VisaStatus;
 import com.rvafin.visacenter.mapper.EVisaMapper;
 import com.rvafin.visacenter.mapper.VisaApplicationFormMapper;
 import com.rvafin.visacenter.repository.*;
+import com.rvafin.visacenter.service.interfaces.DataMatcherService;
 import com.rvafin.visacenter.service.interfaces.VisaDepartmentService;
 import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;
@@ -33,25 +34,24 @@ public class VisaDepartmentServiceImpl implements VisaDepartmentService {
 
     private final VisaApplicationFormEntityRepository visaApplicationFormEntityRepository;
     private final EVisaEntityRepository eVisaEntityRepository;
-    private final CountryEntityRepository countryEntityRepository;
-    private final TouristEntityRepository touristEntityRepository;
     private final UserEntityRepository userEntityRepository;
-    private final VisaApplicationFormMapper visaApplicationFormMapper = Mappers.getMapper(VisaApplicationFormMapper.class);
+    private final VisaApplicationFormMapper visaApplicationFormMapper;
     private final EVisaMapper eVisaMapper = Mappers.getMapper(EVisaMapper.class);
+    private final DataMatcherService dataMatcherService;
 
     @Autowired
     public VisaDepartmentServiceImpl(
             VisaApplicationFormEntityRepository visaApplicationFormEntityRepository,
             EVisaEntityRepository eVisaEntityRepository,
-            CountryEntityRepository countryEntityRepository,
-            TouristEntityRepository touristEntityRepository,
-            UserEntityRepository userEntityRepository
+            UserEntityRepository userEntityRepository,
+            VisaApplicationFormMapper visaApplicationFormMapper,
+            DataMatcherService dataMatcherService
     ){
         this.eVisaEntityRepository = eVisaEntityRepository;
         this.visaApplicationFormEntityRepository = visaApplicationFormEntityRepository;
-        this.countryEntityRepository = countryEntityRepository;
-        this.touristEntityRepository = touristEntityRepository;
         this.userEntityRepository = userEntityRepository;
+        this.visaApplicationFormMapper = visaApplicationFormMapper;
+        this.dataMatcherService = dataMatcherService;
     }
 
     @Transactional
@@ -71,6 +71,7 @@ public class VisaDepartmentServiceImpl implements VisaDepartmentService {
     @Override
     public boolean deleteVisaApplication(long id) {
         log.info("Delete visa application by id {}", id);
+        visaApplicationFormEntityRepository.findById(id).orElseThrow();
         visaApplicationFormEntityRepository.deleteById(id);
         log.info("Visa application with id {} successfully deleted", id);
         return true;
@@ -145,5 +146,10 @@ public class VisaDepartmentServiceImpl implements VisaDepartmentService {
         log.info("Get visa by id {}", id);
         EVisaEntity eVisaEntity = eVisaEntityRepository.findById(id).orElseThrow();
         return Optional.ofNullable(eVisaMapper.toVisaResponseDTO(eVisaEntity)).orElseThrow(NullPointerException::new);
+    }
+
+    @Override
+    public void matchVisasByTourists() {
+        dataMatcherService.matchVisasByTourists();
     }
 }
